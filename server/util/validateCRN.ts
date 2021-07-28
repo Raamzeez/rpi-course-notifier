@@ -25,6 +25,5 @@ export const validateCRN = async (CRN: number): Promise<null | iCourse> => {
   if (!foundCourse) {
     return null;
   }
-  console.log(foundCourse);
   return foundCourse;
 };

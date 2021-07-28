@@ -3,11 +3,13 @@ dotenv.config({});
 import express, { Request, Response } from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
+import helmet from "helmet";
 import Pageclip from "pageclip";
 import sgMail from "@sendgrid/mail";
 import { sendErrorResponse } from "./util/sendErrorResponse";
 import { validateCRN } from "./util/validateCRN";
-import helmet from "helmet";
+import { iPageClipFetch } from "./interface/pageClipFetch";
+import { iPageClipData } from "./interface/pageClipData";
 
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 const pageclip = new Pageclip(process.env.PAGECLIP_API_KEY);
@@ -36,6 +38,27 @@ app.post("/formSubmit", async (req: Request, res: Response) => {
         "The CRN provided was invalid because it did not match to a course"
       );
     }
+    const pageClipFetch: iPageClipFetch = await pageclip.fetch();
+    if (pageClipFetch.status !== 200) {
+      return sendErrorResponse(
+        res,
+        "Fetching Failed",
+        "We failed to fetch the data from our database. Please try again."
+      );
+    }
+    pageClipFetch.data.filter((data: iPageClipData) => {
+      if (
+        data.archivedAt == null &&
+        data.payload.email == email &&
+        data.payload.CRN == CRN
+      ) {
+        return sendErrorResponse(
+          res,
+          "Duplicate",
+          `You are already tracking the course with the CRN of ${CRN}`
+        );
+      }
+    });
     const pageClipResponse = await pageclip.send({ email, CRN });
     if (pageClipResponse.status !== 200) {
       console.error(pageClipResponse);
@@ -65,7 +88,7 @@ app.post("/formSubmit", async (req: Request, res: Response) => {
         "Our email service is not working. Please try again later."
       );
     }
-    return res.status(200).send(data);
+    return res.status(200).send(validateCRNResponse);
   } catch (err) {
     console.error(err);
     return sendErrorResponse(
