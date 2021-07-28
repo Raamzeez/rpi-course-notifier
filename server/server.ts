@@ -7,11 +7,13 @@ import Pageclip from "pageclip";
 import sgMail from "@sendgrid/mail";
 import { sendErrorResponse } from "./util/sendErrorResponse";
 import { validateCRN } from "./util/validateCRN";
+import helmet from "helmet";
 
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 const pageclip = new Pageclip(process.env.PAGECLIP_API_KEY);
 const app = express();
 
+app.use(helmet());
 app.use(cors());
 app.use(bodyParser.json({ limit: "5mb" }));
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -24,10 +26,9 @@ app.get("/", (req: Request, res: Response) => {
 
 app.post("/formSubmit", async (req: Request, res: Response) => {
   try {
-    console.log("Received request");
     const data = req.body;
     const { email, CRN } = data;
-    const validateCRNResponse = validateCRN(CRN);
+    const validateCRNResponse = await validateCRN(CRN);
     if (!validateCRNResponse) {
       return sendErrorResponse(
         res,
