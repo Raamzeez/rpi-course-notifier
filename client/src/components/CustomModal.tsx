@@ -14,6 +14,7 @@ interface iProps {
   professor?: string;
   seats?: iSeats;
   bodyText: string;
+  darkMode: boolean;
 }
 
 const CustomModal: FC<iProps> = ({
@@ -28,12 +29,20 @@ const CustomModal: FC<iProps> = ({
   name,
   professor,
   seats,
+  darkMode,
 }) => {
   return (
     <>
-      <Modal show={true} onHide={onHideHandler} backdrop="static">
+      <Modal
+        show={true}
+        onHide={onHideHandler}
+        backdrop="static"
+        contentClassName={
+          darkMode ? "modal-background-dark" : "modal-background-light"
+        }
+      >
         <Modal.Header closeButton>
-          <h3>{title}</h3>
+          <h3 style={{ color: darkMode ? "white" : "black" }}>{title}</h3>
         </Modal.Header>
         <Modal.Body>
           <div className="text-center">
@@ -46,7 +55,10 @@ const CustomModal: FC<iProps> = ({
             />
           </div>
           {showFormData && (
-            <div className="mt-3">
+            <div
+              className="mt-3"
+              style={{ color: darkMode ? "white" : "black" }}
+            >
               <h6>Course CRN: {CRN}</h6>
               {name && <h6>Title: {name}</h6>}
               {professor && <h6>Professor: {professor}</h6>}
@@ -60,7 +72,11 @@ const CustomModal: FC<iProps> = ({
           )}
           <p
             className="mt-4 text-center"
-            style={{ fontSize: 17.5, fontWeight: 400 }}
+            style={{
+              fontSize: 17.5,
+              fontWeight: 400,
+              color: darkMode ? "white" : "black",
+            }}
           >
             {bodyText}
           </p>

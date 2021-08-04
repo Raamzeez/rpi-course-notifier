@@ -17,6 +17,14 @@ body {
   width: 60%;
 }
 
+.modal-background-dark {
+  background-color: rgb(55, 55, 55);
+}
+
+.modal-background-light {
+  background-color: white;
+}
+
 .submitButton {
   border: none;
   background-color: rgb(67, 221, 126);

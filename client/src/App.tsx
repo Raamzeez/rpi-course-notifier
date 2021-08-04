@@ -194,6 +194,7 @@ const App: FC = () => {
                 CRN={state.CRN}
                 email={state.email}
                 bodyText={state.error.message}
+                darkMode={state.darkMode}
               />
             </>
           )}
@@ -213,6 +214,7 @@ const App: FC = () => {
                   remaining: state.courseData?.sections[0].rem as number,
                 }}
                 bodyText="You will receive a confirmation email which includes further instructions"
+                darkMode={state.darkMode}
               />
             </>
           )}

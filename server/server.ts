@@ -23,10 +23,6 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 const PORT = process.env.PORT || 5000;
 
-app.get("/", (req: Request, res: Response) => {
-  return res.status(200).send("OK");
-});
-
 app.post("/formSubmit", async (req: Request, res: Response) => {
   try {
     const data = req.body;
